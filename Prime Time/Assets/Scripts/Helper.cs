@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Text;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 public static class Helper
@@ -30,7 +29,8 @@ public static class Helper
         return output;
     }
 
-    public static string InsertStringBetweenListItems<T>(List<T> list, string filler) {
+    public static string InsertStringBetweenListItems<T>(List<T> list, string filler)
+    {
         StringBuilder displayTextBuilder = new StringBuilder();
         for (int i = 0; i < list.Count; i++)
         {
@@ -41,5 +41,9 @@ public static class Helper
             }
         }
         return displayTextBuilder.ToString();
+    }
+
+    public static Color GetColorFromRGB(int r, int g, int b) {
+        return new Color(r / 255f, g / 255f, b / 255f);
     }
 }

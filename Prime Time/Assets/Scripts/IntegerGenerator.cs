@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 public class IntegerGenerator
 {
@@ -16,8 +15,7 @@ public class IntegerGenerator
 
     public HashSet<int> GetCompositeNumbers()
     {
-        HashSet<int> output = new HashSet<int>();
-        output.Add(1);
+        HashSet<int> output = new HashSet<int> { 1 };
         foreach (int prime in Helper.GetPrimes(maxPrime))
         {
             output = InsertMultiplesOf(output, prime);

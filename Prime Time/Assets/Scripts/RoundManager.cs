@@ -4,32 +4,50 @@ using UnityEngine.UI;
 public class RoundManager : MonoBehaviour
 {
     public static RoundManager instance;
+    private RoundDisplayHandler roundDisplay;
+    private GameManager gameManager;
 
     private int score;
     private int scoreToAward;
-
-    private float timeLeft = 10f;
+    private int scoreAwardedForThisNumber;
+    private float timeLeft = 60f;
     private float timeChange;
-    private float maxTimeThisRound = 10f;
-
+    private float timeElapsed;
+    private float maxTimeThisRound;
     private bool isPerfectClear = true;
 
-    [SerializeField] private Text scoreDisplay;
-    [SerializeField] private Text timeDisplay;
-    [SerializeField] private Slider timerBar;
+    private int currentNumber;
+    private int answeredNumbers;
+    private int largestNumber = 0;
+    private int highestScore = 0;
+    private int highestScoringNumber;
 
     private void Awake()
     {
         instance = this;
     }
 
-    private void Update()
+    private void Start()
     {
-        ChangeTimeLeft(-Time.deltaTime);
+        roundDisplay = RoundDisplayHandler.instance;
+        gameManager = GameManager.instance;
+        maxTimeThisRound = timeLeft;
     }
 
-    public void ResetPerfectClear()
+    private void Update()
     {
+        timeElapsed += Time.deltaTime;
+        timeLeft -= Time.deltaTime;
+        if (timeLeft < 0)
+            gameManager.EndRound();
+        roundDisplay.ShowTimeLeft(timeLeft, maxTimeThisRound);
+    }
+
+    //Start number
+    public void SetNewNumber(int number)
+    {
+        currentNumber = number;
+        scoreAwardedForThisNumber = 0;
         isPerfectClear = true;
     }
 
@@ -40,45 +58,71 @@ public class RoundManager : MonoBehaviour
 
     public void PunishWrongAnswer()
     {
-        Debug.Log("Incorrect!");
         FailPerfectClear();
-        timeChange -= 2.5f;
+        timeChange -= 3f;
+        roundDisplay.ShowComment("Incorrect!");
+        roundDisplay.SetCommentColor(Helper.GetColorFromRGB(231, 76, 60));
     }
 
-    public void AwardCorrectFactor()
+    public void AwardCorrectFactor(int factor)
     {
-        Debug.Log("Factor is correct.");
-        scoreToAward++;
+        scoreToAward += factor;
+        scoreAwardedForThisNumber += factor;
     }
 
+    //End number
     public void AwardClearNumber()
     {
-        Debug.Log("Correct!");
         if (isPerfectClear)
+            AwardPerfectClear();
+        answeredNumbers++;
+        CheckLargestNumber();
+        CheckHighestScoring();
+    }
+
+    private void CheckLargestNumber() {
+        if (currentNumber > largestNumber)
+            largestNumber = currentNumber;
+    }
+
+    private void CheckHighestScoring() {
+        if (scoreAwardedForThisNumber > highestScore)
         {
-            scoreToAward *= 2;
-            timeChange += 5f;
+            highestScore = scoreAwardedForThisNumber;
+            highestScoringNumber = currentNumber;
         }
-        else
-        {
-            timeChange += 2.5f;
-        }
-        ResetPerfectClear();
+    }
+
+    public void AwardPerfectClear()
+    {
+        scoreToAward *= 2;
+        scoreAwardedForThisNumber *= 2;
+        timeChange += 3f;
+        roundDisplay.ShowComment("Perfect!");
+        roundDisplay.SetCommentColor(Helper.GetColorFromRGB(243, 156, 18));
     }
 
     public void ChangeScore(int delta)
     {
+        if (delta == 0) return;
         score += delta;
-        scoreDisplay.text = score.ToString();
+        roundDisplay.ShowScore(score);
+        roundDisplay.ShowScoreChange(delta);
     }
 
     public void ChangeTimeLeft(float delta)
     {
+        if (delta == 0) return;
         timeLeft += delta;
+        UpdateMaxTimeAchieved();
+        roundDisplay.ShowTimeLeft(timeLeft, maxTimeThisRound);
+        roundDisplay.ShowTimeChange(delta);
+    }
+
+    private void UpdateMaxTimeAchieved()
+    {
         if (timeLeft > maxTimeThisRound)
             maxTimeThisRound = timeLeft;
-        timeDisplay.text = timeLeft.ToString("F1");
-        timerBar.value = timeLeft / maxTimeThisRound;
     }
 
     public void UpdateStats()
@@ -89,4 +133,24 @@ public class RoundManager : MonoBehaviour
         timeChange = 0;
     }
 
+    public int GetScore() {
+        return score;
+    }
+
+    public int GetLargestNumber() {
+        return largestNumber;
+    }
+
+    public int GetNumberOfAnsweredNumbers()
+    {
+        return answeredNumbers;
+    }
+
+    public int GetHighestScoringNumber() {
+        return highestScoringNumber;
+    }
+
+    public float GetTimeElapsed() {
+        return timeElapsed;
+    }
 }

@@ -24,6 +24,6 @@ public class ButtonGenerator : MonoBehaviour
         Text buttonText = buttonObject.GetComponentInChildren<Text>();
         buttonText.text = prime.ToString();
         Button button = buttonObject.GetComponent<Button>();
-        button.onClick.AddListener(delegate { GameplayManager.instance.AddPrime(prime); });
+        button.onClick.AddListener(delegate { PrimeInputModule.instance.AddPrime(prime); });
     }
 }
