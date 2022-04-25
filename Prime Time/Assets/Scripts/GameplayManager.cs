@@ -35,6 +35,7 @@ public class GameplayManager : MonoBehaviour
         ButtonGenerator.instance.GenerateButtons(maxPrime);
         remainingNumbers = new IntegerGenerator(maxPrime, 2, maxNumberInPool).GetCompositeNumbers();
         totalNumbers = remainingNumbers.Count;
+        print(totalNumbers);
         SetNewNumber();
     }
 
@@ -78,7 +79,7 @@ public class GameplayManager : MonoBehaviour
     public void ClearNumber()
     {
         roundManager.AwardClearNumber();
-        if (roundManager.GetNumberOfAnsweredNumbers() * 2 >= totalNumbers) ExpandNumberSet();
+        if (roundManager.GetNumberOfAnsweredNumbers() % 20 == 0) ExpandNumberSet();
         audioModule.PlayCorrect();
         SetNewNumber();
     }
