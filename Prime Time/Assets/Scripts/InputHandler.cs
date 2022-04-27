@@ -3,24 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PrimeInputModule : MonoBehaviour
+public class InputHandler
 {
-    public static PrimeInputModule instance;
-
     private Stack<int> primesEntered = new Stack<int>();
-    private GameplayManager gameplayManager;
     private AudioModule audioModule;
+    private ButtonGenerator buttonGenerator;
+    private NumberManager numberManager;
     [SerializeField] private Text primesDisplay;
 
-    private void Awake()
-    {
-        instance = this;
-    }
-
-    private void Start()
-    {
-        gameplayManager = GameplayManager.instance;
-        audioModule = AudioModule.instance;
+    public InputHandler(NumberManager numberManager, int maxPrime) {
+        buttonGenerator = new ButtonGenerator(this);
+        buttonGenerator.GenerateButtons(maxPrime);
+        this.numberManager = numberManager;
     }
 
     public void AddPrime(int prime)
@@ -59,7 +53,7 @@ public class PrimeInputModule : MonoBehaviour
 
     public void CheckAnswer()
     {
-        gameplayManager.CheckAnswer(primesEntered);
+        numberManager.CheckAnswer(primesEntered);
         primesDisplay.text = "";
     }
 }

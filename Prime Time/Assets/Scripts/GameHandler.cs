@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class GameHandler : MonoBehaviour
 {
-    public static GameManager instance;
-    private ResultHandler resultHandler;
+    public static GameHandler instance;
+    private RoundManager roundManager;
+    private ResultDisplay resultDisplay;
 
     [SerializeField] private VisibilityModule gameplayVisibilityModule;
     [SerializeField] private VisibilityModule resultsVisibilityModule;
@@ -19,7 +20,11 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        resultHandler = ResultHandler.instance;
+        resultDisplay = ResultDisplay.instance;
+    }
+
+    public void StartRound() { 
+        
     }
 
     public void EndRound() {
@@ -28,7 +33,6 @@ public class GameManager : MonoBehaviour
             isPlayingRound = false;
             gameplayVisibilityModule.FadeOut();
             resultsVisibilityModule.FadeIn();
-            resultHandler.DisplayResults();
         }
     }
 }

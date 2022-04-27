@@ -1,16 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ButtonGenerator : MonoBehaviour
+public class ButtonGenerator
 {
-    //Singleton
-    public static ButtonGenerator instance;
-
     [SerializeField] private GameObject buttonPrefab;
+    private InputHandler inputHandler;
 
-    private void Awake()
-    {
-        instance = this;
+    public ButtonGenerator(InputHandler inputHandler) {
+        this.inputHandler = inputHandler;
     }
 
     public void GenerateButtons(int maxPrime)
@@ -20,10 +17,10 @@ public class ButtonGenerator : MonoBehaviour
 
     private void GenerateButton(int prime)
     {
-        GameObject buttonObject = Instantiate(buttonPrefab, transform);
+        GameObject buttonObject = Object.Instantiate(buttonPrefab, GameObject.Find("PrimeSelector").transform);
         Text buttonText = buttonObject.GetComponentInChildren<Text>();
         buttonText.text = prime.ToString();
         Button button = buttonObject.GetComponent<Button>();
-        button.onClick.AddListener(delegate { PrimeInputModule.instance.AddPrime(prime); });
+        button.onClick.AddListener(delegate { inputHandler.AddPrime(prime); });
     }
 }

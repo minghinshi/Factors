@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class RoundDisplayHandler : MonoBehaviour
+public class RoundDisplay : MonoBehaviour
 {
-    public static RoundDisplayHandler instance;
+    public static RoundDisplay instance;
 
     [SerializeField] private Text numberDisplay;
     [SerializeField] private Text scoreText;
@@ -68,5 +68,15 @@ public class RoundDisplayHandler : MonoBehaviour
     public void SetCommentColor(Color color)
     {
         commentText.color = color;
+    }
+
+    public void ShowPerfect() {
+        ShowComment("Perfect!");
+        SetCommentColor(Helper.GetColorFromRGB(243, 156, 18));
+    }
+
+    public void ShowIncorrect() {
+        ShowComment("Incorrect!");
+        SetCommentColor(Helper.GetColorFromRGB(231, 76, 60));
     }
 }
