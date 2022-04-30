@@ -5,22 +5,34 @@ using UnityEngine.UI;
 
 public class InputHandler
 {
-    private Stack<int> primesEntered = new Stack<int>();
     private AudioModule audioModule;
     private ButtonGenerator buttonGenerator;
     private NumberManager numberManager;
-    [SerializeField] private Text primesDisplay;
+    private RoundDisplay roundDisplay;
 
-    public InputHandler(NumberManager numberManager, int maxPrime) {
+    private Stack<int> primesEntered = new Stack<int>();
+
+    public InputHandler(int maxPrime, NumberManager numberManager, RoundDisplay roundDisplay) {
+        this.numberManager = numberManager;
+        this.roundDisplay = roundDisplay;
+        InitializeButtons(maxPrime);
+    }
+
+    private void InitializeButtons(int maxPrime) {
+        GeneratePrimeInputButtoms(maxPrime);
+        GameObject.Find("SubmitButton").GetComponent<Button>().onClick.AddListener(CheckAnswer);
+        GameObject.Find("UndoButton").GetComponent<Button>().onClick.AddListener(DeletePrime);
+    }
+
+    private void GeneratePrimeInputButtoms(int maxPrime) {
         buttonGenerator = new ButtonGenerator(this);
         buttonGenerator.GenerateButtons(maxPrime);
-        this.numberManager = numberManager;
     }
 
     public void AddPrime(int prime)
     {
         primesEntered.Push(prime);
-        DisplayPrimesEntered();
+        ShowPrimesEntered();
         audioModule.PlayClick();
     }
 
@@ -29,7 +41,7 @@ public class InputHandler
         try
         {
             primesEntered.Pop();
-            DisplayPrimesEntered();
+            ShowPrimesEntered();
         }
         catch (InvalidOperationException)
         {
@@ -38,22 +50,13 @@ public class InputHandler
         audioModule.PlayClick();
     }
 
-    public List<int> GetSortedListOfPrimes()
-    {
-        List<int> output = new List<int>(primesEntered);
-        output.Sort();
-        return output;
-    }
-
-    public void DisplayPrimesEntered()
-    {
-        List<int> sortedListOfPrimes = GetSortedListOfPrimes();
-        primesDisplay.text = Helper.InsertStringBetweenListItems(sortedListOfPrimes, " กั ");
-    }
-
     public void CheckAnswer()
     {
         numberManager.CheckAnswer(primesEntered);
-        primesDisplay.text = "";
+        ShowPrimesEntered();
+    }
+
+    public void ShowPrimesEntered() {
+        roundDisplay.ShowPrimesSelected(primesEntered);
     }
 }

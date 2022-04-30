@@ -4,17 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Text;
 
-
-public class ResultDisplay : MonoBehaviour
+public class ResultDisplay
 {
-    public static ResultDisplay instance;
+    private Text scoreText;
+    private Text descriptionText;
 
-    [SerializeField] private Text scoreText;
-    [SerializeField] private Text descriptionText;
-
-    private void Awake()
-    {
-        instance = this;
+    public ResultDisplay() {
+        scoreText = GameObject.Find("FinalScoreText").GetComponent<Text>();
+        descriptionText = GameObject.Find("ResultDescriptionText").GetComponent<Text>();
     }
 
     public void DisplayResults(int score, float timeElapsed, int answeredNumbers, int largestNumber, int highestScoringNumber) {

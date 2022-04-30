@@ -1,48 +1,41 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class RoundManager : MonoBehaviour
+public class RoundManager
 {
-    public static RoundManager instance;
-
     private NumberManager numberManager;
     private TimeManager timeManager;
     private ScoreManager scoreManager;
-    private InputHandler inputHandler;
-
     private RoundDisplay roundDisplay;
     private ResultDisplay resultDisplay;
 
     private int maxPrime = 23;
 
-    private void Awake()
-    {
-        instance = this;
+    public RoundManager(EventHandler TickingEventHandler) {
+        InitializeObjects(TickingEventHandler);
+        ConnectEvents();
     }
 
-    private void Start()
-    {
-        roundDisplay = RoundDisplay.instance;
-        resultDisplay = ResultDisplay.instance;
-
-        numberManager = new NumberManager();
-        timeManager = new TimeManager(60f);
-        scoreManager = new ScoreManager();
-        inputHandler = new InputHandler(numberManager, maxPrime);
+    private void InitializeObjects(EventHandler TickingEventHandler) {
+        roundDisplay = new RoundDisplay();
+        resultDisplay = new ResultDisplay();
+        numberManager = new NumberManager(maxPrime, roundDisplay);
+        timeManager = new TimeManager(60f, TickingEventHandler, roundDisplay);
+        scoreManager = new ScoreManager(roundDisplay);
     }
 
-    private void Update()
-    {
-        timeManager.Tick();
-        
+    private void ConnectEvents() {
+        numberManager.FactorCheckedEventHandler += OnFactorChanged;
+        numberManager.NumberClearedEventHandler += AwardClearNumber;
+        timeManager.RoundEndingEventHandler += EndRound;
     }
 
     public void StartRound() {
-        numberManager.SetPoolOfNumbers(maxPrime);
         SetNewNumber();
     }
 
-    public void EndRound() {
+    public void EndRound(object sender, EventArgs e) {
         resultDisplay.DisplayResults(
             scoreManager.Score,
             timeManager.TimeElapsed,
@@ -58,18 +51,27 @@ public class RoundManager : MonoBehaviour
         scoreManager.ResetNumberScore();
     }
 
+    private void OnFactorChanged(object sender, FactorCheckedEventArgs args)
+    {
+        if (args.IsCorrect) AwardCorrectFactor(args.Factor);
+        else PunishWrongAnswer();
+    }
+
+    public void AwardCorrectFactor(int factor) {
+        scoreManager.AwardScore(factor);
+    }
+
     public void PunishWrongAnswer()
     {
         timeManager.ChangeTimeLeftBy(-3f);
+        roundDisplay.ShowIncorrect();
     }
 
     //End number
-    public void ClearNumber()
+    public void AwardClearNumber(object sender, NumberClearedEventArgs args)
     {
-        if (numberManager.IsPerfectClear)
-            AwardPerfectClear();
-        numberManager.CheckLargestNumber();
-        scoreManager.CheckHighestScoring(numberManager.GetNumber);
+        if (args.IsPerfectClear) AwardPerfectClear();
+        scoreManager.CheckHighestScoring(args.Number);
         SetNewNumber();
     }
 

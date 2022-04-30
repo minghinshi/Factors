@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: f5fe81e86ec59f345864bb6fa2c627a9
+guid: b48613291313150428919320a4ed3c80
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - Lato
+  - JetBrains Mono
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0

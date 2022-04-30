@@ -4,11 +4,17 @@ using UnityEngine;
 
 public class ScoreManager
 {
+    private RoundDisplay roundDisplay;
+
     private int score;
     private int scoreToAward;
     private int scoreAwardedForThisNumber;
     private int highestScore;
     private int highestScoringNumber;
+
+    public ScoreManager(RoundDisplay roundDisplay) {
+        this.roundDisplay = roundDisplay;
+    }
 
     public void ResetNumberScore() {
         scoreAwardedForThisNumber = 0;
@@ -16,7 +22,8 @@ public class ScoreManager
 
     public void ApplyScoreChange() {
         if (scoreToAward == 0) return;
-        score += scoreToAward;
+        roundDisplay.ShowScoreChange(scoreToAward);
+        Score += scoreToAward;
         scoreToAward = 0;
     }
 
@@ -38,7 +45,12 @@ public class ScoreManager
         }
     }
 
-    public int Score { get => score; }
-
     public int HighestScoringNumber { get => highestScoringNumber; }
+    public int Score {
+        get => score;
+        set { 
+            score = value;
+            roundDisplay.ShowScore(score);
+        }
+    }
 }

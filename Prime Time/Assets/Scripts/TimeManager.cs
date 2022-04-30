@@ -1,21 +1,29 @@
+using System;
 using UnityEngine;
 
 public class TimeManager
 {
+    private RoundDisplay roundDisplay;
+
     private float timeLeft;
     private float timeChange;
     private float timeElapsed;
     private float maxTimeThisRound;
 
-    public TimeManager(float timeAllowed) {
-        timeLeft = timeAllowed;
+    private bool roundEnded = false;
+
+    public event EventHandler RoundEndingEventHandler;
+
+    public TimeManager(float timeAllowed, EventHandler TickingEventHandler, RoundDisplay roundDisplay) {
+        this.roundDisplay = roundDisplay;
+        TickingEventHandler += Tick;
+        TimeLeft = timeAllowed;
         maxTimeThisRound = timeAllowed;
     }
 
-    public void Tick() {
+    public void Tick(object sender, EventArgs e) {
         timeElapsed += Time.deltaTime;
-        timeLeft -= Time.deltaTime;
-        RoundDisplay.instance.ShowTimeLeft(timeLeft, maxTimeThisRound);
+        TimeLeft -= Time.deltaTime;
     }
 
     public void ChangeTimeLeftBy(float delta) {
@@ -24,20 +32,29 @@ public class TimeManager
 
     public void ApplyTimeChange() {
         if (timeChange == 0) return;
-        timeLeft += timeChange;
+        TimeLeft += timeChange;
         timeChange = 0;
-        UpdateMaxTimeAchieved();
     }
 
     private void UpdateMaxTimeAchieved()
     {
-        if (timeLeft > maxTimeThisRound)
-            maxTimeThisRound = timeLeft;
+        if (TimeLeft > maxTimeThisRound)
+            maxTimeThisRound = TimeLeft;
     }
 
     public float TimeElapsed { get => timeElapsed; }
+    public float TimeLeft { 
+        get => timeLeft;
+        set {
+            timeLeft = value;
+            UpdateMaxTimeAchieved();
+            roundDisplay.ShowTimeLeft(TimeLeft, maxTimeThisRound);
+            if (timeLeft <= 0 && !roundEnded) EndRound();
+        }
+    }
 
-    public bool IsRoundEnded() {
-        return timeLeft < 0;
+    private void EndRound() {
+        RoundEndingEventHandler?.Invoke(this, EventArgs.Empty);
+        roundEnded = true;
     }
 }

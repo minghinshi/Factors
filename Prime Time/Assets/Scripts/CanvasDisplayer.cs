@@ -6,8 +6,8 @@ public class CanvasDisplayer
     {
         if (module != current)
         {
-            current = module;
             current.FadeOut();
+            current = module;
             module.FadeIn();
         }
     }

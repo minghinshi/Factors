@@ -1,15 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GameHandler : MonoBehaviour
 {
+    public event EventHandler TickingEventHandler;
+
     public static GameHandler instance;
     private RoundManager roundManager;
-    private ResultDisplay resultDisplay;
-
-    [SerializeField] private VisibilityModule gameplayVisibilityModule;
-    [SerializeField] private VisibilityModule resultsVisibilityModule;
+    private CanvasDisplayer canvasDisplayer;
 
     private bool isPlayingRound = true;
 
@@ -20,19 +20,15 @@ public class GameHandler : MonoBehaviour
 
     private void Start()
     {
-        resultDisplay = ResultDisplay.instance;
+        StartRound();
     }
 
-    public void StartRound() { 
-        
+    private void Update()
+    {
+        TickingEventHandler?.Invoke(this, EventArgs.Empty);
     }
 
-    public void EndRound() {
-        if (isPlayingRound)
-        {
-            isPlayingRound = false;
-            gameplayVisibilityModule.FadeOut();
-            resultsVisibilityModule.FadeIn();
-        }
+    public void StartRound() {
+        roundManager = new RoundManager(TickingEventHandler);
     }
 }
