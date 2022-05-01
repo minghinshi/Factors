@@ -10,19 +10,22 @@ public class NumberManager
     private InputHandler inputHandler;
 
     private int currentNumber;
+    private int remainingNumber;
     private bool isPerfectClear = true;
-    private int answeredNumbers;
+    private int countOfAnsweredNumbers;
     private int largestNumber = 0;
 
     public event EventHandler<FactorCheckedEventArgs> FactorCheckedEventHandler;
+    public event EventHandler NumberCheckedEventHandler;
     public event EventHandler<NumberClearedEventArgs> NumberClearedEventHandler;
 
-    public NumberManager(int maxPrime, RoundDisplay roundDisplay)
+    public NumberManager(int maxPrime)
     {
         audioModule = AudioModule.instance;
-        this.roundDisplay = roundDisplay;
+        roundDisplay = RoundDisplay.instance;
         numberPool = new NumberPool(maxPrime, 64);
-        inputHandler = new InputHandler(maxPrime, this, roundDisplay);
+        inputHandler = InputHandler.instance;
+        inputHandler.Initialize(maxPrime, this);
     }
 
     public void SetNewNumber()
@@ -33,22 +36,23 @@ public class NumberManager
     public void SetNumber(int number)
     {
         currentNumber = number;
+        RemainingNumber = number;
         isPerfectClear = true;
-        roundDisplay.ShowNumber(number);
     }
 
     public void CheckAnswer(Stack<int> primes)
     {
         ReduceNumber(primes);
-        if (currentNumber == 1) ClearNumber();
+        if (RemainingNumber == 1) ClearNumber();
         else NumberNotCleared();
-        roundDisplay.ShowNumber(currentNumber);
+        NumberCheckedEventHandler?.Invoke(this, EventArgs.Empty);
     }
 
     public void ClearNumber()
     {
         InvokeNumberClearedEvent();
-        if (answeredNumbers % 20 == 0) numberPool.Expand();
+        countOfAnsweredNumbers++;
+        if (countOfAnsweredNumbers % 20 == 0) numberPool.Expand();
         audioModule.PlayCorrect();
         CheckLargestNumber();
         SetNewNumber();
@@ -77,8 +81,8 @@ public class NumberManager
 
     public void CheckFactor(int prime)
     {
-        bool isCorrect = (currentNumber % prime == 0);
-        if (isCorrect) currentNumber /= prime;
+        bool isCorrect = (RemainingNumber % prime == 0);
+        if (isCorrect) RemainingNumber /= prime;
         else isPerfectClear = false;
         InvokeFactorCheckedEvent(prime, isCorrect);
     }
@@ -99,9 +103,19 @@ public class NumberManager
             largestNumber = currentNumber;
     }
 
-    public int AnsweredNumbers { get => answeredNumbers; }
+    public int AnsweredNumbers { get => countOfAnsweredNumbers; }
 
     public int LargestNumber { get => largestNumber; }
+
+    public int RemainingNumber
+    {
+        get => remainingNumber;
+        set
+        {
+            remainingNumber = value;
+            roundDisplay.ShowNumber(value);
+        }
+    }
 }
 
 public class FactorCheckedEventArgs : EventArgs

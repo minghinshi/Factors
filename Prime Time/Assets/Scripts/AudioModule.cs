@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class AudioModule : MonoBehaviour
@@ -21,20 +19,24 @@ public class AudioModule : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
     }
 
-    private void RandomizePitch() {
+    private void RandomizePitch()
+    {
         audioSource.pitch = Random.Range(0.9f, 1.1f);
     }
 
-    private void SetPitchToNormal() {
+    private void SetPitchToNormal()
+    {
         audioSource.pitch = 1;
     }
 
-    public void PlayClick() {
+    public void PlayClick()
+    {
         RandomizePitch();
         audioSource.PlayOneShot(clickClip);
     }
 
-    public void PlayCorrect() {
+    public void PlayCorrect()
+    {
         SetPitchToNormal();
         audioSource.PlayOneShot(correctClip);
     }

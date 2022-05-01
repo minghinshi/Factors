@@ -43,7 +43,8 @@ public static class Helper
         return displayTextBuilder.ToString();
     }
 
-    public static Color GetColorFromRGB(int r, int g, int b) {
+    public static Color GetColorFromRGB(int r, int g, int b)
+    {
         return new Color(r / 255f, g / 255f, b / 255f);
     }
 }

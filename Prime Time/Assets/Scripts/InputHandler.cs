@@ -3,30 +3,40 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InputHandler
+public class InputHandler : MonoBehaviour
 {
-    private AudioModule audioModule;
-    private ButtonGenerator buttonGenerator;
+    public static InputHandler instance;
+
+    private PrimeButtonHandler primeButtonHandler;
     private NumberManager numberManager;
     private RoundDisplay roundDisplay;
+    private AudioModule audioModule;
 
-    private Stack<int> primesEntered = new Stack<int>();
+    private Stack<int> primesEntered;
 
-    public InputHandler(int maxPrime, NumberManager numberManager, RoundDisplay roundDisplay) {
+    private void Awake()
+    {
+        instance = this;
+    }
+
+    private void Start()
+    {
+        roundDisplay = RoundDisplay.instance;
+        audioModule = AudioModule.instance;
+    }
+
+    public void Initialize(int maxPrime, NumberManager numberManager) {
+        SetPrimeInputButtons(maxPrime);
         this.numberManager = numberManager;
-        this.roundDisplay = roundDisplay;
-        InitializeButtons(maxPrime);
+        primesEntered = new Stack<int>();
+        ShowPrimesEntered();
     }
 
-    private void InitializeButtons(int maxPrime) {
-        GeneratePrimeInputButtoms(maxPrime);
-        GameObject.Find("SubmitButton").GetComponent<Button>().onClick.AddListener(CheckAnswer);
-        GameObject.Find("UndoButton").GetComponent<Button>().onClick.AddListener(DeletePrime);
-    }
-
-    private void GeneratePrimeInputButtoms(int maxPrime) {
-        buttonGenerator = new ButtonGenerator(this);
-        buttonGenerator.GenerateButtons(maxPrime);
+    private void SetPrimeInputButtons(int maxPrime)
+    {
+        primeButtonHandler = new PrimeButtonHandler(this);
+        primeButtonHandler.DeleteButtons();
+        primeButtonHandler.GenerateButtons(maxPrime);
     }
 
     public void AddPrime(int prime)
@@ -45,18 +55,20 @@ public class InputHandler
         }
         catch (InvalidOperationException)
         {
-            Debug.Log("No primes to delete!");
+            roundDisplay.ShowCannotDelete();
         }
         audioModule.PlayClick();
     }
 
     public void CheckAnswer()
     {
+        if (primesEntered.Count == 0) return;
         numberManager.CheckAnswer(primesEntered);
         ShowPrimesEntered();
     }
 
-    public void ShowPrimesEntered() {
+    public void ShowPrimesEntered()
+    {
         roundDisplay.ShowPrimesSelected(primesEntered);
     }
 }

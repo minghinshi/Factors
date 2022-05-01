@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class ScoreManager
 {
     private RoundDisplay roundDisplay;
@@ -12,27 +8,33 @@ public class ScoreManager
     private int highestScore;
     private int highestScoringNumber;
 
-    public ScoreManager(RoundDisplay roundDisplay) {
-        this.roundDisplay = roundDisplay;
+    public ScoreManager()
+    {
+        roundDisplay = RoundDisplay.instance;
+        Score = 0;
     }
 
-    public void ResetNumberScore() {
+    public void ResetNumberScore()
+    {
         scoreAwardedForThisNumber = 0;
     }
 
-    public void ApplyScoreChange() {
+    public void ApplyScoreChange()
+    {
         if (scoreToAward == 0) return;
         roundDisplay.ShowScoreChange(scoreToAward);
         Score += scoreToAward;
         scoreToAward = 0;
     }
 
-    public void AwardScore(int delta) {
+    public void AwardScore(int delta)
+    {
         scoreToAward += delta;
         scoreAwardedForThisNumber += delta;
     }
 
-    public void DoubleScore() {
+    public void DoubleScore()
+    {
         AwardScore(scoreToAward);
     }
 
@@ -46,9 +48,11 @@ public class ScoreManager
     }
 
     public int HighestScoringNumber { get => highestScoringNumber; }
-    public int Score {
+    public int Score
+    {
         get => score;
-        set { 
+        set
+        {
             score = value;
             roundDisplay.ShowScore(score);
         }

@@ -3,40 +3,26 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class RoundDisplay
+public class RoundDisplay : MonoBehaviour
 {
-    private Text numberText;
-    private Text scoreText;
-    private Text timeLeftText;
-    private Text scoreChangeText;
-    private Text timeChangeText;
-    private Text commentText;
-    private Text primesSelectedText;
-    private Slider timerBar;
+    public static RoundDisplay instance;
 
-    private VisibilityModule scoreChangeVisibilityModule;
-    private VisibilityModule timeChangeVisibilityModule;
-    private VisibilityModule commentVisibilityModule;
+    [SerializeField] private Text numberText;
+    [SerializeField] private Text scoreText;
+    [SerializeField] private Text timeLeftText;
+    [SerializeField] private Text scoreChangeText;
+    [SerializeField] private Text timeChangeText;
+    [SerializeField] private Text commentText;
+    [SerializeField] private Text primesSelectedText;
+    [SerializeField] private Slider timerBar;
 
-    public RoundDisplay() {
-        FindTexts();
-        FindVisibilityModules();
-    }
+    [SerializeField] private VisibilityModule scoreChangeVisibilityModule;
+    [SerializeField] private VisibilityModule timeChangeVisibilityModule;
+    [SerializeField] private VisibilityModule commentVisibilityModule;
 
-    private void FindTexts() {
-        numberText = GameObject.Find("NumberText").GetComponent<Text>();
-        scoreText = GameObject.Find("ScoreText").GetComponent<Text>();
-        timeLeftText = GameObject.Find("TimeLeftText").GetComponent<Text>();
-        scoreChangeText = GameObject.Find("ScoreChangeText").GetComponent<Text>();
-        timeChangeText = GameObject.Find("TimeChangeText").GetComponent<Text>();
-        commentText = GameObject.Find("CommentText").GetComponent<Text>();
-        primesSelectedText = GameObject.Find("PrimesSelectedText").GetComponent<Text>();
-    }
-
-    private void FindVisibilityModules() {
-        scoreChangeVisibilityModule = scoreChangeText.GetComponent<VisibilityModule>();
-        timeChangeVisibilityModule = timeChangeText.GetComponent<VisibilityModule>();
-        commentVisibilityModule = commentText.GetComponent<VisibilityModule>();
+    private void Awake()
+    {
+        instance = this;
     }
 
     public void ShowNumber(int number)
@@ -78,17 +64,25 @@ public class RoundDisplay
         commentText.color = color;
     }
 
-    public void ShowPerfect() {
+    public void ShowPerfect()
+    {
         ShowComment("Perfect!");
         SetCommentColor(Helper.GetColorFromRGB(243, 156, 18));
     }
 
-    public void ShowIncorrect() {
+    public void ShowIncorrect()
+    {
         ShowComment("Incorrect!");
         SetCommentColor(Helper.GetColorFromRGB(231, 76, 60));
     }
 
-    public void ShowPrimesSelected(Stack<int> primes) {
+    public void ShowCannotDelete() {
+        ShowComment("Nothing to delete.");
+        SetCommentColor(Helper.GetColorFromRGB(44, 62, 80));
+    }
+
+    public void ShowPrimesSelected(Stack<int> primes)
+    {
         List<int> sortedListOfPrimes = new List<int>(primes);
         sortedListOfPrimes.Sort();
         primesSelectedText.text = Helper.InsertStringBetweenListItems(sortedListOfPrimes, " กั ");

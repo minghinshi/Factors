@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class TimeManager
 {
+    private Round round;
     private RoundDisplay roundDisplay;
 
     private float timeLeft;
@@ -10,28 +11,30 @@ public class TimeManager
     private float timeElapsed;
     private float maxTimeThisRound;
 
-    private bool roundEnded = false;
-
-    public event EventHandler RoundEndingEventHandler;
-
-    public TimeManager(float timeAllowed, EventHandler TickingEventHandler, RoundDisplay roundDisplay) {
-        this.roundDisplay = roundDisplay;
-        TickingEventHandler += Tick;
+    public TimeManager(float timeAllowed, Game gameHandler, Round round)
+    {
+        roundDisplay = RoundDisplay.instance;
+        this.round = round;
+        gameHandler.TickingEventHandler += Tick;
         TimeLeft = timeAllowed;
         maxTimeThisRound = timeAllowed;
     }
 
-    public void Tick(object sender, EventArgs e) {
+    public void Tick(object sender, EventArgs e)
+    {
         timeElapsed += Time.deltaTime;
         TimeLeft -= Time.deltaTime;
     }
 
-    public void ChangeTimeLeftBy(float delta) {
+    public void ChangeTimeLeftBy(float delta)
+    {
         timeChange += delta;
     }
 
-    public void ApplyTimeChange() {
+    public void ApplyTimeChange()
+    {
         if (timeChange == 0) return;
+        roundDisplay.ShowTimeChange(timeChange);
         TimeLeft += timeChange;
         timeChange = 0;
     }
@@ -43,18 +46,15 @@ public class TimeManager
     }
 
     public float TimeElapsed { get => timeElapsed; }
-    public float TimeLeft { 
+    public float TimeLeft
+    {
         get => timeLeft;
-        set {
+        set
+        {
             timeLeft = value;
             UpdateMaxTimeAchieved();
-            roundDisplay.ShowTimeLeft(TimeLeft, maxTimeThisRound);
-            if (timeLeft <= 0 && !roundEnded) EndRound();
+            roundDisplay.ShowTimeLeft(value, maxTimeThisRound);
+            if (timeLeft <= 0) round.EndRound();
         }
-    }
-
-    private void EndRound() {
-        RoundEndingEventHandler?.Invoke(this, EventArgs.Empty);
-        roundEnded = true;
     }
 }

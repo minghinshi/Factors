@@ -21,7 +21,7 @@ public class NumberPool
     {
         int number = numbersInPool.ElementAt(Random.Range(0, numbersInPool.Count));
         numbersInPool.Remove(number);
-        return number;
+        return number == 1 ? DrawNumber() : number;
     }
 
     public void Expand()
