@@ -8,6 +8,7 @@ public class PanelSwitcher : MonoBehaviour
     [SerializeField] private VisibilityModule mainMenuPanel;
     [SerializeField] private VisibilityModule roundPanel;
     [SerializeField] private VisibilityModule resultPanel;
+    [SerializeField] private VisibilityModule roundSettingsPanel;
 
     private void Awake()
     {
@@ -25,15 +26,23 @@ public class PanelSwitcher : MonoBehaviour
         }
     }
 
-    public void ShowRoundPanel() {
+    public void ShowRoundPanel()
+    {
         SwitchModule(roundPanel);
     }
 
-    public void ShowResultPanel() {
+    public void ShowResultPanel()
+    {
         SwitchModule(resultPanel);
     }
 
-    public void ShowMainMenuPanel() {
+    public void ShowMainMenuPanel()
+    {
         SwitchModule(mainMenuPanel);
+    }
+
+    public void ShowRoundSettingsPanel()
+    {
+        SwitchModule(roundSettingsPanel);
     }
 }

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class InputHandler : MonoBehaviour
 {
@@ -25,7 +24,8 @@ public class InputHandler : MonoBehaviour
         audioModule = AudioModule.instance;
     }
 
-    public void Initialize(int maxPrime, NumberManager numberManager) {
+    public void Initialize(int maxPrime, NumberManager numberManager)
+    {
         SetPrimeInputButtons(maxPrime);
         this.numberManager = numberManager;
         primesEntered = new Stack<int>();

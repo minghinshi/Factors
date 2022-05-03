@@ -76,7 +76,8 @@ public class RoundDisplay : MonoBehaviour
         SetCommentColor(Helper.GetColorFromRGB(231, 76, 60));
     }
 
-    public void ShowCannotDelete() {
+    public void ShowCannotDelete()
+    {
         ShowComment("Nothing to delete.");
         SetCommentColor(Helper.GetColorFromRGB(44, 62, 80));
     }

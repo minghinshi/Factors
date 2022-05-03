@@ -8,8 +8,8 @@ public class Round
     private RoundDisplay roundDisplay;
     private ResultDisplay resultDisplay;
     private PanelSwitcher panelSwitcher;
+    private RoundSettings roundSettings;
 
-    private int maxPrime = 23;
     private bool roundEnded = false;
 
     public Round(Game gameHandler)
@@ -20,9 +20,10 @@ public class Round
 
     private void InitializeObjects(Game gameHandler)
     {
+        roundSettings = RoundSettingsInput.instance.GetRoundSettings();
         roundDisplay = RoundDisplay.instance;
         resultDisplay = new ResultDisplay();
-        numberManager = new NumberManager(maxPrime);
+        numberManager = new NumberManager(roundSettings.MaxPrime);
         timeManager = new TimeManager(60f, gameHandler, this);
         scoreManager = new ScoreManager();
         panelSwitcher = PanelSwitcher.instance;
@@ -75,7 +76,7 @@ public class Round
 
     public void AwardPerfectClear()
     {
-        scoreManager.DoubleScore();
+        scoreManager.GivePerfectClearBonus();
         timeManager.ChangeTimeLeftBy(3f);
         roundDisplay.ShowPerfect();
     }

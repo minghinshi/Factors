@@ -5,6 +5,7 @@ public class ScoreManager
     private int score;
     private int scoreToAward;
     private int scoreAwardedForThisNumber;
+    private int multiplier;
     private int highestScore;
     private int highestScoringNumber;
 
@@ -33,7 +34,7 @@ public class ScoreManager
         scoreAwardedForThisNumber += delta;
     }
 
-    public void DoubleScore()
+    public void GivePerfectClearBonus()
     {
         AwardScore(scoreToAward);
     }

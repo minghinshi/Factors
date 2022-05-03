@@ -25,7 +25,8 @@ public class Game : MonoBehaviour
         panelSwitcher.ShowRoundPanel();
     }
 
-    public void Retry() {
+    public void Retry()
+    {
         StartRound();
     }
 }

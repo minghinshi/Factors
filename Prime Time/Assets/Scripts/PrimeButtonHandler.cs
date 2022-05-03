@@ -13,7 +13,8 @@ public class PrimeButtonHandler
         buttonContainer = GameObject.Find("PrimeSelector").transform;
     }
 
-    public void DeleteButtons() {
+    public void DeleteButtons()
+    {
         foreach (Transform child in buttonContainer) Object.Destroy(child.gameObject);
     }
 
