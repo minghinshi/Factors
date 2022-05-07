@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class CompositeNumber
 {
+    private bool hasBeenFactored = false;
     private Dictionary<int, int> primeFactorCounts;
 
     public CompositeNumber(int number, int maxPrime)
@@ -14,7 +15,7 @@ public class CompositeNumber
     {
         List<int> primes = Helper.GetPrimes(maxPrime);
         Dictionary<int, int> counts = new Dictionary<int, int>();
-        foreach (int prime in primes)
+        foreach (int prime in primes) if(number % prime == 0)   //To test if it is at least divisible once
             counts.Add(prime, CountFactors(number, prime));
         return counts;
     }
@@ -30,7 +31,14 @@ public class CompositeNumber
         return count;
     }
 
-    public bool[] ReduceNumber(int[] primes)
+    public FactoringAttempt AttemptToFactor(int[] primes) {
+        bool isFirstAttempt = !hasBeenFactored;
+        hasBeenFactored = true;
+        bool[] arePrimesCorrect = GetReduceNumberResult(primes);
+        return new FactoringAttempt(isFirstAttempt, primes, arePrimesCorrect, GetNumber());
+    }
+
+    public bool[] GetReduceNumberResult(int[] primes)
     {
         bool[] canReduce = new bool[primes.Length];
         for (int i = 0; i < primes.Length; i++)
@@ -41,8 +49,7 @@ public class CompositeNumber
     private bool ReduceNumber(int prime)
     {
         if (!primeFactorCounts.ContainsKey(prime)) return false;
-        //Just to see if -= works on dictionaries
-        Debug.Log(primeFactorCounts[prime]);
+        Debug.Log(primeFactorCounts[prime]);    //Just to see if -= works on dictionaries
         primeFactorCounts[prime] -= 1;
         Debug.Log(primeFactorCounts[prime]);
         if (primeFactorCounts[prime] == 0) primeFactorCounts.Remove(prime);
