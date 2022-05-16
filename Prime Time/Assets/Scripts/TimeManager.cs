@@ -7,7 +7,6 @@ public class TimeManager
     private RoundDisplay roundDisplay;
 
     private float timeLeft;
-    private float timeChange;
     private float timeElapsed;
     private float maxTimeThisRound;
 
@@ -26,17 +25,15 @@ public class TimeManager
         TimeLeft -= Time.deltaTime;
     }
 
-    public void ChangeTimeLeftBy(float delta)
-    {
-        timeChange += delta;
+    public float GetTimePenaltyOf(FactoringAttempt factoringAttempt) {
+        return factoringAttempt.GetCountOfIncorrectPrimes() * -3f;
     }
 
-    public void ApplyTimeChange()
+    public void ChangeTimeLeftBy(float delta)
     {
-        if (timeChange == 0) return;
-        roundDisplay.ShowTimeChange(timeChange);
-        TimeLeft += timeChange;
-        timeChange = 0;
+        if (delta == 0) return;
+        timeLeft += delta;
+        roundDisplay.ShowTimeChange(delta);
     }
 
     private void UpdateMaxTimeAchieved()

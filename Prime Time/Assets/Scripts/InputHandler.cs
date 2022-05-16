@@ -7,9 +7,9 @@ public class InputHandler : MonoBehaviour
     public static InputHandler instance;
 
     private PrimeButtonHandler primeButtonHandler;
-    private NumberManager numberManager;
     private RoundDisplay roundDisplay;
     private AudioModule audioModule;
+    private Round round;
 
     private Stack<int> primesEntered;
 
@@ -24,10 +24,10 @@ public class InputHandler : MonoBehaviour
         audioModule = AudioModule.instance;
     }
 
-    public void Initialize(int maxPrime, NumberManager numberManager)
+    public void Initialize(int maxPrime, Round round)
     {
+        this.round = round;
         SetPrimeInputButtons(maxPrime);
-        this.numberManager = numberManager;
         primesEntered = new Stack<int>();
         ShowPrimesEntered();
     }
@@ -63,7 +63,7 @@ public class InputHandler : MonoBehaviour
     public void CheckAnswer()
     {
         if (primesEntered.Count == 0) return;
-        numberManager.CheckAnswer(primesEntered);
+        round.MakeAttempt(primesEntered.ToArray());
         ShowPrimesEntered();
     }
 

@@ -1,41 +1,60 @@
-using System.Collections.Generic;
-
 public class FactoringAttempt
 {
-    private bool isFirstAttempt;
-    private int[] primesInput;
-    private bool[] arePrimesCorrect;
-    private int newCompositeNumber;
+    int originalNumber;
+    int newNumber;
+    int[] enteredPrimes;
+    bool[] arePrimesCorrect;
 
-    public FactoringAttempt(bool isFirstAttempt, int[] primesInput, bool[] arePrimesCorrect, int newCompositeNumber)
-    {
-        if (primesInput.Length != arePrimesCorrect.Length)
-            throw new System.Exception("primesInput and arePrimesCorrect have different array sizes");
-        this.isFirstAttempt = isFirstAttempt;
-        this.primesInput = primesInput;
-        this.arePrimesCorrect = arePrimesCorrect;
-        this.newCompositeNumber = newCompositeNumber;
+    public int NewNumber { get => newNumber; }
+    public int[] EnteredPrimes { get => enteredPrimes; }
+    public bool[] ArePrimesCorrect { get => arePrimesCorrect; }
+
+    public FactoringAttempt(int number, int[] primes) {
+        originalNumber = number;
+        newNumber = number;
+        enteredPrimes = primes;
+        arePrimesCorrect = new bool[primes.Length];
+
+        ReduceNumber();
     }
 
     public int GetCountOfCorrectPrimes() {
         int count = 0;
-        foreach (bool isPrimeCorrect in arePrimesCorrect)
-            if (isPrimeCorrect) count++;
+        foreach (bool correct in arePrimesCorrect)
+            if (correct) count++;
         return count;
     }
 
     public int GetCountOfIncorrectPrimes() {
-        return arePrimesCorrect.Length - GetCountOfCorrectPrimes();
+        return enteredPrimes.Length - GetCountOfCorrectPrimes();
     }
 
-    public int[] GetCorrectPrimes() {
-        List<int> correctPrimes = new List<int>();
-        for (int i = 0; i < primesInput.Length; i++)
-            if (arePrimesCorrect[i]) correctPrimes.Add(primesInput[i]);
-        return correctPrimes.ToArray();
+    public bool IsAllCorrect() {
+        return GetCountOfIncorrectPrimes() == 0;
     }
 
-    public bool IsPerfect() {
-        return isFirstAttempt && GetCountOfIncorrectPrimes() == 0 && newCompositeNumber == 1;
+    public bool HasWrongAnswers() {
+        return !IsAllCorrect();
+    }
+
+    public int GetScore() {
+        int score = 0;
+        for (int i = 0; i < EnteredPrimes.Length; i++)
+            if (ArePrimesCorrect[i]) score += EnteredPrimes[i];
+        score *= GetCountOfCorrectPrimes();
+        return score;
+    }
+
+    public float GetTimePenalty(float penaltyPerWrongAnswer) {
+        return penaltyPerWrongAnswer * GetCountOfIncorrectPrimes();
+    }
+
+    private void ReduceNumber() {
+        for (int i = 0; i < enteredPrimes.Length; i++)
+        {
+            int prime = enteredPrimes[i];
+            arePrimesCorrect[i] = newNumber % prime == 0;
+            if (arePrimesCorrect[i]) newNumber /= prime;
+        }
     }
 }

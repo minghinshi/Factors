@@ -34,7 +34,7 @@ public class NumberPool
         numbersInPool.UnionWith(newNumbers);
     }
 
-    public HashSet<int> GetCompositeNumbers()
+    private HashSet<int> GetCompositeNumbers()
     {
         HashSet<int> output = new HashSet<int> { 1 };
         foreach (int prime in Helper.GetPrimes(maxPrime))
@@ -42,7 +42,7 @@ public class NumberPool
         return output;
     }
 
-    public HashSet<int> InsertMultiplesOf(HashSet<int> numbers, int prime)
+    private HashSet<int> InsertMultiplesOf(HashSet<int> numbers, int prime)
     {
         HashSet<int> output = new HashSet<int>();
         HashSet<int> newNumbers = new HashSet<int>(numbers);
@@ -54,7 +54,7 @@ public class NumberPool
         return output;
     }
 
-    public HashSet<int> MultiplySetBy(HashSet<int> numbers, int prime)
+    private HashSet<int> MultiplySetBy(HashSet<int> numbers, int prime)
     {
         HashSet<int> output = new HashSet<int>();
         foreach (int number in numbers)

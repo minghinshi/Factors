@@ -1,89 +1,79 @@
 using System;
+using System.Collections.Generic;
 
 public class Round
 {
-    private NumberManager numberManager;
     private TimeManager timeManager;
     private ScoreManager scoreManager;
     private RoundDisplay roundDisplay;
-    private ResultDisplay resultDisplay;
-    private PanelSwitcher panelSwitcher;
     private RoundSettings roundSettings;
+    private AudioModule audioModule;
+    private NumberPool numberPool;
+    private RoundResults roundResults;
 
-    private bool roundEnded = false;
+    private List<Subround> subrounds = new List<Subround>();
 
     public Round(Game gameHandler)
     {
         InitializeObjects(gameHandler);
-        ConnectEvents();
+        StartNewSubround();
     }
 
     private void InitializeObjects(Game gameHandler)
     {
         roundSettings = RoundSettingsInput.instance.GetRoundSettings();
+
         roundDisplay = RoundDisplay.instance;
-        resultDisplay = new ResultDisplay();
-        numberManager = new NumberManager(roundSettings.MaxPrime);
         timeManager = new TimeManager(60f, gameHandler, this);
         scoreManager = new ScoreManager();
-        panelSwitcher = PanelSwitcher.instance;
+        audioModule = AudioModule.instance;
+        numberPool = new NumberPool(roundSettings.MaxPrime, 64);
+        InputHandler.instance.Initialize(roundSettings.MaxPrime, this);
     }
 
-    private void ConnectEvents()
+    public void MakeAttempt(int[] primes)
     {
-        numberManager.FactorCheckedEventHandler += OnFactorChecked;
-        numberManager.NumberCheckedEventHandler += UpdateStats;
-        numberManager.NumberClearedEventHandler += AwardClearNumber;
-    }
-
-    public void StartRound()
-    {
-        numberManager.SetNewNumber();
+        FactoringAttempt factoringAttempt = GetCurrentSubround().MakeAttempt(primes);
+        if (factoringAttempt.HasWrongAnswers())
+            PunishWrongAnswer(factoringAttempt.GetCountOfIncorrectPrimes());
+        if (GetCurrentSubround().IsCleared())
+            EndSubround();
+        audioModule.PlayClick();
     }
 
     public void EndRound()
     {
-        if (roundEnded) return;
-        resultDisplay.DisplayResults(scoreManager.Score, timeManager.TimeElapsed, numberManager.AnsweredNumbers, numberManager.LargestNumber, scoreManager.HighestScoringNumber);
-        panelSwitcher.ShowResultPanel();
-        roundEnded = true;
+        if (roundResults != null)
+            roundResults = new RoundResults(scoreManager.Score, timeManager.TimeElapsed, subrounds.ToArray());
     }
 
-    private void OnFactorChecked(object sender, FactorCheckedEventArgs args)
-    {
-        if (args.IsCorrect) AwardCorrectFactor(args.Factor);
-        else PunishWrongAnswer();
+    private void StartNewSubround() {
+        int startingNumber = numberPool.DrawNumber();
+        subrounds.Add(new Subround(startingNumber));
     }
 
-    public void AwardCorrectFactor(int factor)
-    {
-        scoreManager.AwardScore(factor);
+    private Subround GetCurrentSubround() {
+        return subrounds[subrounds.Count - 1];
     }
 
-    public void PunishWrongAnswer()
+    private void PunishWrongAnswer(int wrongAnswerCount)
     {
-        timeManager.ChangeTimeLeftBy(-3f);
+        timeManager.ChangeTimeLeftBy(-3f * wrongAnswerCount);
         roundDisplay.ShowIncorrect();
     }
 
-    //End number
-    public void AwardClearNumber(object sender, NumberClearedEventArgs args)
-    {
-        if (args.IsPerfectClear) AwardPerfectClear();
-        scoreManager.CheckHighestScoring(args.Number);
-        scoreManager.ResetNumberScore();
+    private void EndSubround() {
+        if (GetCurrentSubround().IsPerfect())
+            AwardPerfectClear();
+        if (subrounds.Count % 20 == 0)
+            numberPool.Expand();
+        audioModule.PlayCorrect();
+        StartNewSubround();
     }
 
-    public void AwardPerfectClear()
+    private void AwardPerfectClear()
     {
-        scoreManager.GivePerfectClearBonus();
         timeManager.ChangeTimeLeftBy(3f);
         roundDisplay.ShowPerfect();
-    }
-
-    public void UpdateStats(object sender, EventArgs e)
-    {
-        scoreManager.ApplyScoreChange();
-        timeManager.ApplyTimeChange();
     }
 }

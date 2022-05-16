@@ -21,7 +21,6 @@ public class Game : MonoBehaviour
     public void StartRound()
     {
         round = new Round(this);
-        round.StartRound();
         panelSwitcher.ShowRoundPanel();
     }
 
