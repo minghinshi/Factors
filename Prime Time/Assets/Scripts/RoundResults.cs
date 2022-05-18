@@ -1,6 +1,6 @@
-using UnityEngine.UI;
-using UnityEngine;
 using System.Text;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class RoundResults
 {
@@ -11,9 +11,12 @@ public class RoundResults
     private Text descriptionText;
     private Subround[] subrounds;
 
-    public RoundResults(int score, float timeElapsed, Subround[] subround) {
+    public RoundResults(int score, float timeElapsed, Subround[] subrounds)
+    {
         this.score = score;
         this.timeElapsed = timeElapsed;
+        this.subrounds = subrounds;
+
         scoreText = GameObject.Find("FinalScoreText").GetComponent<Text>();
         descriptionText = GameObject.Find("ResultDescriptionText").GetComponent<Text>();
 

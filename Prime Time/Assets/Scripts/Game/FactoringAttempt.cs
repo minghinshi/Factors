@@ -9,7 +9,8 @@ public class FactoringAttempt
     public int[] EnteredPrimes { get => enteredPrimes; }
     public bool[] ArePrimesCorrect { get => arePrimesCorrect; }
 
-    public FactoringAttempt(int number, int[] primes) {
+    public FactoringAttempt(int number, int[] primes)
+    {
         originalNumber = number;
         newNumber = number;
         enteredPrimes = primes;
@@ -18,26 +19,31 @@ public class FactoringAttempt
         ReduceNumber();
     }
 
-    public int GetCountOfCorrectPrimes() {
+    public int GetCountOfCorrectPrimes()
+    {
         int count = 0;
         foreach (bool correct in arePrimesCorrect)
             if (correct) count++;
         return count;
     }
 
-    public int GetCountOfIncorrectPrimes() {
+    public int GetCountOfIncorrectPrimes()
+    {
         return enteredPrimes.Length - GetCountOfCorrectPrimes();
     }
 
-    public bool IsAllCorrect() {
+    public bool IsAllCorrect()
+    {
         return GetCountOfIncorrectPrimes() == 0;
     }
 
-    public bool HasWrongAnswers() {
+    public bool HasWrongAnswers()
+    {
         return !IsAllCorrect();
     }
 
-    public int GetScore() {
+    public int GetScore()
+    {
         int score = 0;
         for (int i = 0; i < EnteredPrimes.Length; i++)
             if (ArePrimesCorrect[i]) score += EnteredPrimes[i];
@@ -45,11 +51,13 @@ public class FactoringAttempt
         return score;
     }
 
-    public float GetTimePenalty(float penaltyPerWrongAnswer) {
+    public float GetTimePenalty(float penaltyPerWrongAnswer)
+    {
         return penaltyPerWrongAnswer * GetCountOfIncorrectPrimes();
     }
 
-    private void ReduceNumber() {
+    private void ReduceNumber()
+    {
         for (int i = 0; i < enteredPrimes.Length; i++)
         {
             int prime = enteredPrimes[i];

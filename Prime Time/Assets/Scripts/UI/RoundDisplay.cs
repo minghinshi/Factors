@@ -82,7 +82,7 @@ public class RoundDisplay : MonoBehaviour
         SetCommentColor(Helper.GetColorFromRGB(44, 62, 80));
     }
 
-    public void ShowPrimesSelected(Stack<int> primes)
+    public void ShowEnteredPrimes(Stack<int> primes)
     {
         List<int> sortedListOfPrimes = new List<int>(primes);
         sortedListOfPrimes.Sort();

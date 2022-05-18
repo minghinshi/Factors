@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 public class Round
@@ -7,7 +6,7 @@ public class Round
     private ScoreManager scoreManager;
     private RoundDisplay roundDisplay;
     private RoundSettings roundSettings;
-    private AudioModule audioModule;
+    private AudioHandler audioModule;
     private NumberPool numberPool;
     private RoundResults roundResults;
 
@@ -26,14 +25,15 @@ public class Round
         roundDisplay = RoundDisplay.instance;
         timeManager = new TimeManager(60f, gameHandler, this);
         scoreManager = new ScoreManager();
-        audioModule = AudioModule.instance;
+        audioModule = AudioHandler.instance;
         numberPool = new NumberPool(roundSettings.MaxPrime, 64);
-        InputHandler.instance.Initialize(roundSettings.MaxPrime, this);
+        new InputHandler(roundSettings.MaxPrime, this);
     }
 
     public void MakeAttempt(int[] primes)
     {
         FactoringAttempt factoringAttempt = GetCurrentSubround().MakeAttempt(primes);
+        scoreManager.AwardScore(factoringAttempt.GetScore());
         if (factoringAttempt.HasWrongAnswers())
             PunishWrongAnswer(factoringAttempt.GetCountOfIncorrectPrimes());
         if (GetCurrentSubround().IsCleared())
@@ -43,16 +43,18 @@ public class Round
 
     public void EndRound()
     {
-        if (roundResults != null)
+        if (roundResults == null)
             roundResults = new RoundResults(scoreManager.Score, timeManager.TimeElapsed, subrounds.ToArray());
     }
 
-    private void StartNewSubround() {
+    private void StartNewSubround()
+    {
         int startingNumber = numberPool.DrawNumber();
         subrounds.Add(new Subround(startingNumber));
     }
 
-    private Subround GetCurrentSubround() {
+    private Subround GetCurrentSubround()
+    {
         return subrounds[subrounds.Count - 1];
     }
 
@@ -62,7 +64,8 @@ public class Round
         roundDisplay.ShowIncorrect();
     }
 
-    private void EndSubround() {
+    private void EndSubround()
+    {
         if (GetCurrentSubround().IsPerfect())
             AwardPerfectClear();
         if (subrounds.Count % 20 == 0)

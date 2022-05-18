@@ -25,7 +25,8 @@ public class TimeManager
         TimeLeft -= Time.deltaTime;
     }
 
-    public float GetTimePenaltyOf(FactoringAttempt factoringAttempt) {
+    public float GetTimePenaltyOf(FactoringAttempt factoringAttempt)
+    {
         return factoringAttempt.GetCountOfIncorrectPrimes() * -3f;
     }
 
