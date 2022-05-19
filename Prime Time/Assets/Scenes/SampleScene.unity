@@ -537,6 +537,7 @@ GameObject:
   - component: {fileID: 55623584}
   - component: {fileID: 55623583}
   - component: {fileID: 55623582}
+  - component: {fileID: 55623585}
   m_Layer: 5
   m_Name: SubmitButton
   m_TagString: Untagged
@@ -658,6 +659,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 55623580}
   m_CullTransparentMesh: 1
+--- !u!114 &55623585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 55623580}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b06915e514ce5fb4d931ba01b554223f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &152877358
 GameObject:
   m_ObjectHideFlags: 0
@@ -1517,6 +1530,7 @@ GameObject:
   - component: {fileID: 702008179}
   - component: {fileID: 702008178}
   - component: {fileID: 702008177}
+  - component: {fileID: 702008180}
   m_Layer: 5
   m_Name: UndoButton
   m_TagString: Untagged
@@ -1638,6 +1652,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 702008175}
   m_CullTransparentMesh: 1
+--- !u!114 &702008180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 702008175}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b06915e514ce5fb4d931ba01b554223f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &867098057
 GameObject:
   m_ObjectHideFlags: 0

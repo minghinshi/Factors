@@ -1,24 +1,24 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
-public class ActionButton
+public class ActionButton : MonoBehaviour
 {
     private Button button;
-    private AudioHandler audioHandler = AudioHandler.instance;
+    private AudioHandler audioHandler;
 
-    public ActionButton(GameObject buttonObject)
+    public event EventHandler ActionButtonClick;
+
+    private void Start()
     {
-        button = buttonObject.GetComponent<Button>();
+        button = GetComponent<Button>();
         button.onClick.AddListener(OnButtonClick);
-    }
-
-    public Button GetButton()
-    {
-        return button;
+        audioHandler = AudioHandler.instance;
     }
 
     protected virtual void OnButtonClick()
     {
         audioHandler.PlayClick();
+        ActionButtonClick?.Invoke(this, EventArgs.Empty);
     }
 }

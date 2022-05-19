@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 using UnityEngine.UI;
 
 public class PrimeButton : ActionButton
@@ -9,11 +8,10 @@ public class PrimeButton : ActionButton
 
     public event EventHandler<int> PrimeButtonClick;
 
-    public PrimeButton(int prime, GameObject buttonObject) : base(buttonObject)
-    {
+    public void Initialize(int prime) {
         this.prime = prime;
 
-        primeDisplay = buttonObject.GetComponentInChildren<Text>();
+        primeDisplay = GetComponentInChildren<Text>();
         primeDisplay.text = prime.ToString();
     }
 

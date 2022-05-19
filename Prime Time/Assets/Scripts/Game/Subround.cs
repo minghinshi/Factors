@@ -6,19 +6,21 @@ public class Subround
     private List<FactoringAttempt> attemptHistory = new List<FactoringAttempt>();
     private RoundDisplay roundDisplay = RoundDisplay.instance;
 
-    public List<FactoringAttempt> AttemptHistory { get => attemptHistory; }
-
     public Subround(int startingNumber)
     {
         AddNewNumber(startingNumber);
     }
 
-    public FactoringAttempt MakeAttempt(int[] primes)
+    public FactoringAttempt MakeAttempt(PrimeInput primeInput)
     {
-        FactoringAttempt newAttempt = new FactoringAttempt(GetCurrentNumber(), primes);
+        FactoringAttempt newAttempt = new FactoringAttempt(GetCurrentNumber(), primeInput);
         attemptHistory.Add(newAttempt);
         AddNewNumber(newAttempt.NewNumber);
         return newAttempt;
+    }
+
+    public FactoringAttempt GetLatestAttempt() {
+        return attemptHistory[attemptHistory.Count - 1];
     }
 
     public bool IsCleared()

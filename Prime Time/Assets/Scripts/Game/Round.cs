@@ -4,13 +4,17 @@ public class Round
 {
     private TimeManager timeManager;
     private ScoreManager scoreManager;
-    private RoundDisplay roundDisplay;
     private RoundSettings roundSettings;
-    private AudioHandler audioModule;
+    private AudioHandler audioModule; //Used to indicate correct answer
     private NumberPool numberPool;
     private RoundResults roundResults;
+    private PrimeInput primeInput;
 
     private List<Subround> subrounds = new List<Subround>();
+
+    public ScoreManager ScoreManager { get => scoreManager; }
+    public TimeManager TimeManager { get => timeManager; }
+    public PrimeInput PrimeInput { get => primeInput; }
 
     public Round(Game gameHandler)
     {
@@ -22,23 +26,25 @@ public class Round
     {
         roundSettings = RoundSettingsInput.instance.GetRoundSettings();
 
-        roundDisplay = RoundDisplay.instance;
         timeManager = new TimeManager(60f, gameHandler, this);
         scoreManager = new ScoreManager();
         audioModule = AudioHandler.instance;
         numberPool = new NumberPool(roundSettings.MaxPrime, 64);
-        new InputHandler(roundSettings.MaxPrime, this);
+        primeInput = new PrimeInput();
     }
 
-    public void MakeAttempt(int[] primes)
+    public int GetMaxPrime() {
+        return roundSettings.MaxPrime;
+    }
+
+    public void MakeAttempt()
     {
-        FactoringAttempt factoringAttempt = GetCurrentSubround().MakeAttempt(primes);
-        scoreManager.AwardScore(factoringAttempt.GetScore());
-        if (factoringAttempt.HasWrongAnswers())
-            PunishWrongAnswer(factoringAttempt.GetCountOfIncorrectPrimes());
+        GetCurrentSubround().MakeAttempt(primeInput);
+        primeInput.ClearPrimes();
+        AttemptPerformance performance = new AttemptPerformance(this);
+        performance.Evaluate();
         if (GetCurrentSubround().IsCleared())
             EndSubround();
-        audioModule.PlayClick();
     }
 
     public void EndRound()
@@ -53,30 +59,16 @@ public class Round
         subrounds.Add(new Subround(startingNumber));
     }
 
-    private Subround GetCurrentSubround()
+    public Subround GetCurrentSubround()
     {
         return subrounds[subrounds.Count - 1];
     }
 
-    private void PunishWrongAnswer(int wrongAnswerCount)
-    {
-        timeManager.ChangeTimeLeftBy(-3f * wrongAnswerCount);
-        roundDisplay.ShowIncorrect();
-    }
-
     private void EndSubround()
     {
-        if (GetCurrentSubround().IsPerfect())
-            AwardPerfectClear();
         if (subrounds.Count % 20 == 0)
             numberPool.Expand();
         audioModule.PlayCorrect();
         StartNewSubround();
-    }
-
-    private void AwardPerfectClear()
-    {
-        timeManager.ChangeTimeLeftBy(3f);
-        roundDisplay.ShowPerfect();
     }
 }

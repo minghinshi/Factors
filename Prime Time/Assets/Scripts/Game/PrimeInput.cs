@@ -22,15 +22,15 @@ public class PrimeInput
         }
     }
 
+    public int[] GetInput()
+    {
+        return enteredPrimes.ToArray();
+    }
+
     public void ClearPrimes()
     {
         enteredPrimes.Clear();
         ShowEnteredPrimes();
-    }
-
-    public int[] GetPrimes()
-    {
-        return enteredPrimes.ToArray();
     }
 
     private void ShowEnteredPrimes()

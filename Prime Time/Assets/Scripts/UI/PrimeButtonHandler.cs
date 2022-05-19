@@ -23,7 +23,8 @@ public class PrimeButtonHandler
     private PrimeButton GetNewButton(int prime)
     {
         GameObject buttonObject = Object.Instantiate(buttonPrefab, buttonContainer);
-        PrimeButton primeButton = new PrimeButton(prime, buttonObject);
+        PrimeButton primeButton = buttonObject.GetComponent<PrimeButton>();
+        primeButton.Initialize(prime);
         return primeButton;
     }
 

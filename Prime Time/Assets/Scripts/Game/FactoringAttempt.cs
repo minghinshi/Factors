@@ -9,12 +9,12 @@ public class FactoringAttempt
     public int[] EnteredPrimes { get => enteredPrimes; }
     public bool[] ArePrimesCorrect { get => arePrimesCorrect; }
 
-    public FactoringAttempt(int number, int[] primes)
+    public FactoringAttempt(int number, PrimeInput primeInput)
     {
         originalNumber = number;
         newNumber = number;
-        enteredPrimes = primes;
-        arePrimesCorrect = new bool[primes.Length];
+        enteredPrimes = primeInput.GetInput();
+        arePrimesCorrect = new bool[enteredPrimes.Length];
 
         ReduceNumber();
     }
@@ -51,9 +51,9 @@ public class FactoringAttempt
         return score;
     }
 
-    public float GetTimePenalty(float penaltyPerWrongAnswer)
+    public float GetTimePenalty()
     {
-        return penaltyPerWrongAnswer * GetCountOfIncorrectPrimes();
+        return -3f * GetCountOfIncorrectPrimes();
     }
 
     private void ReduceNumber()

@@ -2,26 +2,32 @@ using UnityEngine;
 
 public class InputHandler
 {
-    private PrimeInput primeInput = new PrimeInput();
+    private PrimeInput primeInput;
     private Round round;
 
-    public InputHandler(int maxPrime, Round round)
-    {
-        this.round = round;
-        InitializeButtons(maxPrime);
+    public InputHandler() {
+        InitializeActionButtons();
     }
 
-    private void InitializeButtons(int maxPrime)
+    public void SetUpInputFor(Round round) {
+        this.round = round;
+        primeInput = round.PrimeInput;
+        InitializePrimeButtons(round.GetMaxPrime());
+    }
+
+    private void InitializeActionButtons() {
+        ActionButton submitButton = GameObject.Find("SubmitButton").GetComponent<ActionButton>();
+        submitButton.ActionButtonClick += OnSubmitButtonClick;
+
+        ActionButton undoButton = GameObject.Find("UndoButton").GetComponent<ActionButton>();
+        undoButton.ActionButtonClick += OnUndoButtonClick;
+    }
+
+    private void InitializePrimeButtons(int maxPrime)
     {
         PrimeButton[] primeButtons = new PrimeButtonHandler().GetNewButtons(maxPrime);
         foreach (PrimeButton button in primeButtons)
             button.PrimeButtonClick += OnPrimeButtonClick;
-
-        ActionButton submitButton = new ActionButton(GameObject.Find("SubmitButton"));
-        submitButton.GetButton().onClick.AddListener(CheckAnswer);
-
-        ActionButton undoButton = new ActionButton(GameObject.Find("UndoButton"));
-        undoButton.GetButton().onClick.AddListener(primeInput.DeletePrime);
     }
 
     private void OnPrimeButtonClick(object sender, int prime)
@@ -29,11 +35,13 @@ public class InputHandler
         primeInput.AddPrime(prime);
     }
 
-    private void CheckAnswer()
+    private void OnUndoButtonClick(object sender, System.EventArgs e)
     {
-        int[] enteredPrimes = primeInput.GetPrimes();
-        if (enteredPrimes.Length == 0) return;
-        round.MakeAttempt(enteredPrimes);
-        primeInput.ClearPrimes();
+        primeInput.DeletePrime();
+    }
+
+    private void OnSubmitButtonClick(object sender, System.EventArgs e)
+    {
+        round.MakeAttempt();
     }
 }
