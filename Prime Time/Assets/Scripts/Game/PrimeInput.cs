@@ -1,40 +1,40 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class PrimeInput
 {
-    private Stack<int> enteredPrimes = new Stack<int>();
-    private RoundDisplay roundDisplay = RoundDisplay.instance;
+    private int prime;
+    private bool isCorrect;
+    private bool isChecked;
 
-    public void AddPrime(int prime)
-    {
-        enteredPrimes.Push(prime);
-        ShowEnteredPrimes();
+    public PrimeInput(int prime) {
+        this.prime = prime;
     }
 
-    public void DeletePrime()
+    public int GetPrime()
     {
-        if (enteredPrimes.Count == 0)
-            roundDisplay.ShowCannotDelete();
-        else
-        {
-            enteredPrimes.Pop();
-            ShowEnteredPrimes();
-        }
+        return prime;
     }
 
-    public int[] GetInput()
-    {
-        return enteredPrimes.ToArray();
+    public void Check(CompositeNumber number) {
+        isCorrect = IsFactorOf(number);
+        isChecked = true;
     }
 
-    public void ClearPrimes()
-    {
-        enteredPrimes.Clear();
-        ShowEnteredPrimes();
+    public bool IsCorrect() {
+        if (!isChecked) throw new UncheckedAnswerException();
+        return isCorrect;
     }
 
-    private void ShowEnteredPrimes()
-    {
-        roundDisplay.ShowEnteredPrimes(enteredPrimes);
+    public bool IsFactorOf(CompositeNumber number) {
+        return number.GetValue() % prime == 0;
+    }
+
+    public int GetScore() {
+        return IsCorrect() ? prime : 0;
     }
 }
+
+class UncheckedAnswerException : Exception { }

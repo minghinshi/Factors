@@ -5,16 +5,16 @@ public class Round
     private TimeManager timeManager;
     private ScoreManager scoreManager;
     private RoundSettings roundSettings;
-    private AudioHandler audioModule; //Used to indicate correct answer
+    private AudioHandler audioModule;
     private NumberPool numberPool;
     private RoundResults roundResults;
-    private PrimeInput primeInput;
+    private CurrentPrimeInputs primeInput;
 
     private List<Subround> subrounds = new List<Subround>();
 
     public ScoreManager ScoreManager { get => scoreManager; }
     public TimeManager TimeManager { get => timeManager; }
-    public PrimeInput PrimeInput { get => primeInput; }
+    public CurrentPrimeInputs PrimeInput { get => primeInput; }
 
     public Round(Game gameHandler)
     {
@@ -29,12 +29,12 @@ public class Round
         timeManager = new TimeManager(60f, gameHandler, this);
         scoreManager = new ScoreManager();
         audioModule = AudioHandler.instance;
-        numberPool = new NumberPool(roundSettings.MaxPrime, 64);
-        primeInput = new PrimeInput();
+        numberPool = new NumberPool(roundSettings.PrimeRange, 64);
+        primeInput = new CurrentPrimeInputs();
     }
 
-    public int GetMaxPrime() {
-        return roundSettings.MaxPrime;
+    public PrimeRange GetPrimeRange() {
+        return roundSettings.PrimeRange;
     }
 
     public void MakeAttempt()
@@ -55,7 +55,7 @@ public class Round
 
     private void StartNewSubround()
     {
-        int startingNumber = numberPool.DrawNumber();
+        CompositeNumber startingNumber = numberPool.DrawNumber();
         subrounds.Add(new Subround(startingNumber));
     }
 

@@ -29,20 +29,23 @@ public class RoundResults
         return subrounds.Length - 1;
     }
 
-    private int GetLargestNumber()
+    private CompositeNumber GetLargestNumber()
     {
-        int largestNumber = 0;
+        CompositeNumber largestNumber = subrounds[0].GetStartingNumber();
         foreach (Subround subround in subrounds)
-            if (subround.IsCleared() && subround.GetStartingNumber() > largestNumber)
-                largestNumber = subround.GetStartingNumber();
+        {
+            CompositeNumber number = subround.GetStartingNumber();
+            if (subround.IsCleared() && number.IsLargerThan(largestNumber))
+                largestNumber = number;
+        }
         return largestNumber;
     }
 
-    private int GetHighestScoringNumber()
+    private CompositeNumber GetHighestScoringNumber()
     {
         Subround highestScoringSubround = subrounds[0];
         for (int i = 1; i < subrounds.Length; i++)
-            if (subrounds[i].IsCleared() && subrounds[i].GetTotalScore() > highestScoringSubround.GetTotalScore())
+            if (subrounds[i].IsCleared() && subrounds[i].GetScore() > highestScoringSubround.GetScore())
                 highestScoringSubround = subrounds[i];
         return highestScoringSubround.GetStartingNumber();
     }

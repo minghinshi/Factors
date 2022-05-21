@@ -10,10 +10,10 @@ public class PrimeButtonHandler
         buttonContainer = GameObject.Find("PrimeSelector").transform;
     }
 
-    public PrimeButton[] GetNewButtons(int maxPrime)
+    public PrimeButton[] GetNewButtons(PrimeRange primeRange)
     {
         DeleteButtons();
-        int[] primes = Helper.GetPrimes(maxPrime).ToArray();
+        int[] primes = primeRange.GetPrimesInRange();
         PrimeButton[] primeButtons = new PrimeButton[primes.Length];
         for (int i = 0; i < primes.Length; i++)
             primeButtons[i] = GetNewButton(primes[i]);

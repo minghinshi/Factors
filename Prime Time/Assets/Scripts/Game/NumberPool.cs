@@ -4,30 +4,30 @@ using UnityEngine;
 
 public class NumberPool
 {
-    private int maxPrime;
+    private PrimeRange primeRange;
     private int maxNumber;
     private HashSet<int> allNumbers;
     private HashSet<int> numbersInPool;
 
-    public NumberPool(int maxPrime, int maxNumber)
+    public NumberPool(PrimeRange primeRange, int maxNumber)
     {
-        this.maxPrime = maxPrime;
+        this.primeRange = primeRange;
         this.maxNumber = maxNumber;
         allNumbers = GetCompositeNumbers();
         numbersInPool = new HashSet<int>(allNumbers);
     }
 
-    public int DrawNumber()
+    public CompositeNumber DrawNumber()
     {
         int number = numbersInPool.ElementAt(Random.Range(0, numbersInPool.Count));
         numbersInPool.Remove(number);
-        return number == 1 ? DrawNumber() : number;
+        return number == 1 ? DrawNumber() : new CompositeNumber(number);
     }
 
     public void Expand()
     {
         maxNumber *= 2;
-        foreach (int prime in Helper.GetPrimes(maxPrime))
+        foreach (int prime in primeRange.GetPrimesInRange())
             allNumbers.UnionWith(MultiplySetBy(allNumbers, prime));
         HashSet<int> newNumbers = new HashSet<int>(allNumbers);
         newNumbers.RemoveWhere(x => x * 2 <= maxNumber);
@@ -37,7 +37,7 @@ public class NumberPool
     private HashSet<int> GetCompositeNumbers()
     {
         HashSet<int> output = new HashSet<int> { 1 };
-        foreach (int prime in Helper.GetPrimes(maxPrime))
+        foreach (int prime in primeRange.GetPrimesInRange())
             output = InsertMultiplesOf(output, prime);
         return output;
     }

@@ -25,9 +25,9 @@ public class RoundDisplay : MonoBehaviour
         instance = this;
     }
 
-    public void ShowNumber(int number)
+    public void ShowNumber(CompositeNumber compositeNumber)
     {
-        numberText.text = number.ToString();
+        numberText.text = compositeNumber.ToString();
     }
 
     public void ShowScore(int score)
@@ -82,9 +82,9 @@ public class RoundDisplay : MonoBehaviour
         SetCommentColor(Helper.GetColorFromRGB(44, 62, 80));
     }
 
-    public void ShowEnteredPrimes(Stack<int> primes)
+    public void ShowEnteredPrimes(Stack<PrimeInput> primes)
     {
-        List<int> sortedListOfPrimes = new List<int>(primes);
+        List<int> sortedListOfPrimes = new List<PrimeInput>(primes).ConvertAll(x => x.GetPrime());
         sortedListOfPrimes.Sort();
         primesSelectedText.text = Helper.InsertStringBetweenListItems(sortedListOfPrimes, " กั ");
     }

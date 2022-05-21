@@ -1,21 +1,21 @@
 public class RoundSettings
 {
-    private int maxPrime;
+    private PrimeRange primeRange;
 
-    public int MaxPrime { get => maxPrime; set => maxPrime = value; }
+    public PrimeRange PrimeRange { get => primeRange; set => primeRange = value; }
 
     public RoundSettings()
     {
-        maxPrime = 7;
+        primeRange = new PrimeRange(7);
     }
 
-    public RoundSettings(int maxPrime)
+    private RoundSettings(PrimeRange primeRange)
     {
-        this.maxPrime = maxPrime;
+        this.primeRange = primeRange;
     }
 
     public RoundSettings GetClone()
     {
-        return new RoundSettings(maxPrime);
+        return new RoundSettings(primeRange);
     }
 }

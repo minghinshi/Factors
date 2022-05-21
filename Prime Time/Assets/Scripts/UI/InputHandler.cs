@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class InputHandler
 {
-    private PrimeInput primeInput;
+    private CurrentPrimeInputs primeInput;
     private Round round;
 
     public InputHandler() {
@@ -12,7 +12,7 @@ public class InputHandler
     public void SetUpInputFor(Round round) {
         this.round = round;
         primeInput = round.PrimeInput;
-        InitializePrimeButtons(round.GetMaxPrime());
+        InitializePrimeButtons(round.GetPrimeRange());
     }
 
     private void InitializeActionButtons() {
@@ -23,9 +23,9 @@ public class InputHandler
         undoButton.ActionButtonClick += OnUndoButtonClick;
     }
 
-    private void InitializePrimeButtons(int maxPrime)
+    private void InitializePrimeButtons(PrimeRange primeRange)
     {
-        PrimeButton[] primeButtons = new PrimeButtonHandler().GetNewButtons(maxPrime);
+        PrimeButton[] primeButtons = new PrimeButtonHandler().GetNewButtons(primeRange);
         foreach (PrimeButton button in primeButtons)
             button.PrimeButtonClick += OnPrimeButtonClick;
     }

@@ -1,7 +1,7 @@
 public class AttemptPerformance
 {
     private Subround subround;
-    private FactoringAttempt factoringAttempt;
+    private FinalPrimeInputs answer;
 
     private RoundDisplay roundDisplay;
     private ScoreManager scoreManager;
@@ -9,7 +9,7 @@ public class AttemptPerformance
 
     public AttemptPerformance(Round round) {
         subround = round.GetCurrentSubround();
-        factoringAttempt = subround.GetLatestAttempt();
+        answer = subround.GetLatestAttempt().GetPrimeInputs();
 
         roundDisplay = RoundDisplay.instance;
         scoreManager = round.ScoreManager;
@@ -17,15 +17,15 @@ public class AttemptPerformance
     }
 
     public void Evaluate() {
-        scoreManager.AwardScore(factoringAttempt.GetScore());
-        if (factoringAttempt.HasWrongAnswers())
+        scoreManager.AwardScore(answer);
+        if (answer.HasWrongAnswers())
             OnAnswerIncorrect();
         if (subround.IsPerfect())
             OnAnswerPerfect();
     }
 
     private void OnAnswerIncorrect() {
-        timeManager.ChangeTimeLeftBy(factoringAttempt.GetTimePenalty());
+        timeManager.PunishWrongAnswer(answer);
         roundDisplay.ShowIncorrect();
     }
 

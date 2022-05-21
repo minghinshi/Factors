@@ -1,64 +1,55 @@
+using System;
 using System.Collections.Generic;
 
 public class Subround
 {
-    private List<int> numberSequence = new List<int>();
-    private List<FactoringAttempt> attemptHistory = new List<FactoringAttempt>();
-    private RoundDisplay roundDisplay = RoundDisplay.instance;
+    private CompositeNumber startingNumber;
+    private List<Attempt> attempts = new List<Attempt>();
 
-    public Subround(int startingNumber)
+    public Subround(CompositeNumber startingNumber)
     {
-        AddNewNumber(startingNumber);
+        this.startingNumber = startingNumber;
+        RoundDisplay.instance.ShowNumber(startingNumber);
     }
 
-    public FactoringAttempt MakeAttempt(PrimeInput primeInput)
-    {
-        FactoringAttempt newAttempt = new FactoringAttempt(GetCurrentNumber(), primeInput);
-        attemptHistory.Add(newAttempt);
-        AddNewNumber(newAttempt.NewNumber);
-        return newAttempt;
+    public Attempt MakeAttempt(CurrentPrimeInputs primeInputs) {
+        FinalPrimeInputs finalAnswer = primeInputs.GetFinalizedAnswer();
+        Attempt attempt = new Attempt(finalAnswer, GetCurrentNumber());
+        attempts.Add(attempt);
+        return attempt;
     }
 
-    public FactoringAttempt GetLatestAttempt() {
-        return attemptHistory[attemptHistory.Count - 1];
+    public Attempt GetLatestAttempt() {
+        if (attempts.Count == 0) return null;
+        return attempts[attempts.Count - 1];
     }
 
     public bool IsCleared()
     {
-        return GetCurrentNumber() == 1;
+        return GetCurrentNumber().IsUnity();
     }
 
     public bool IsPerfect()
     {
-        return GetAttemptCount() == 1 && numberSequence[1] == 1 && attemptHistory[0].IsAllCorrect();
+        return attempts[0].IsPerfect();
     }
 
-    public int GetStartingNumber()
+    public CompositeNumber GetStartingNumber()
     {
-        return numberSequence[0];
+        return startingNumber;
     }
 
-    public int GetCurrentNumber()
-    {
-        return numberSequence[numberSequence.Count - 1];
-    }
-
-    public int GetTotalScore()
+    public int GetScore()
     {
         int score = 0;
-        foreach (FactoringAttempt attempt in attemptHistory)
-            score += attempt.GetScore();
+        foreach (Attempt attempt in attempts)
+            score += attempt.GetPrimeInputs().GetScore();
         return score;
     }
 
-    private int GetAttemptCount()
+    private CompositeNumber GetCurrentNumber()
     {
-        return attemptHistory.Count;
-    }
-
-    private void AddNewNumber(int number)
-    {
-        numberSequence.Add(number);
-        roundDisplay.ShowNumber(number);
+        if (attempts.Count == 0) return startingNumber;
+        else return GetLatestAttempt().GetNewNumber();
     }
 }

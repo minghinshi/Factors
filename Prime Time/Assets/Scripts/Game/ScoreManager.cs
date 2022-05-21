@@ -19,7 +19,11 @@ public class ScoreManager
         Score = 0;
     }
 
-    public void AwardScore(int delta)
+    public void AwardScore(FinalPrimeInputs answer) {
+        AwardScore(answer.GetScore());
+    }
+
+    private void AwardScore(int delta)
     {
         if (delta == 0) return;
         Score += delta;

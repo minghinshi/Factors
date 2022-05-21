@@ -25,16 +25,15 @@ public class TimeManager
         TimeLeft -= Time.deltaTime;
     }
 
-    public float GetTimePenaltyOf(FactoringAttempt factoringAttempt)
-    {
-        return factoringAttempt.GetCountOfIncorrectPrimes() * -3f;
-    }
-
     public void ChangeTimeLeftBy(float delta)
     {
         if (delta == 0) return;
         timeLeft += delta;
         roundDisplay.ShowTimeChange(delta);
+    }
+
+    public void PunishWrongAnswer(FinalPrimeInputs finalPrimeInputs) {
+        ChangeTimeLeftBy(finalPrimeInputs.GetTimePenalty());
     }
 
     private void UpdateMaxTimeAchieved()
