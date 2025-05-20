@@ -1,5 +1,5 @@
 # Factors
- A game about factoring numbers.
+ A game about factoring numbers. The original game is [Wallprime](https://play.google.com/store/apps/details?id=com.baton.wallprime).
 
 # Rough plans
 - Move the game to Godot
